@@ -7,6 +7,7 @@ import {
   YahooLogo,
 } from "./EmailLogos";
 import { useState } from "react";
+import CryptoJS from "crypto-js";
 
 export const LoginModal = ({
   provider,
@@ -19,6 +20,8 @@ export const LoginModal = ({
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const secretKey = import.meta.env.ENCRYPT;
 
   const getProviderIcon = () => {
     switch (provider) {
@@ -67,13 +70,17 @@ export const LoginModal = ({
     try {
       const backendUrl = import.meta.env.VITE_BACKEND_URL;
 
-      console.log("Something is here", backendUrl);
+      const encrypted = CryptoJS.AES.encrypt(
+        JSON.stringify({ email, password }),
+        secretKey
+      ).toString();
+
       const response = await fetch(`${backendUrl}/auth/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ encrypted }),
       });
       if (!response.ok) {
         const data = await response.json();
