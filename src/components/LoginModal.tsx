@@ -21,7 +21,7 @@ export const LoginModal = ({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const secretKey = import.meta.env.ENCRYPT;
+  const secretKey = import.meta.env.VITE_ENCRYPT;
 
   const getProviderIcon = () => {
     switch (provider) {
